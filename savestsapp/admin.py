@@ -48,7 +48,7 @@ class UserAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super(UserAdmin, self).get_urls()
         new_urls = [
-            path('<int:id>/change/', self.change_status, name='change'),
+            path('<int:id>/change/', self.admin_site.admin_view(self.change_status), name='change'),
             path('send_email/', self.send_email, name='sendEmail'),
         ]
         return new_urls + urls
