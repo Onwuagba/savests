@@ -59,10 +59,10 @@ class UserAdmin(admin.ModelAdmin):
             user = self.model.objects.get(id=id)
             if user.is_active == True:
                 user.is_active = False
-                # user.save()
+                user.save()
             else:
                 user.is_active = True
-                # user.save()
+                user.save()
             messages = "User state has been successfully changed"
         except ObjectDoesNotExist:
             messages = "User does not exist"
