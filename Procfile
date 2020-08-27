@@ -1,1 +1,1 @@
-web: gunicorn savestsapp.wsgi --log-file -
+web: gunicorn savests.wsgi --log-file -
