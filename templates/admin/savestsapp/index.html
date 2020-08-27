@@ -1,0 +1,11 @@
+{% extends 'admin/index.html' %}
+{% block sidebar %}
+<div id="content-related">
+    <div class="module" id="recent-actions-module">
+        {% if users_today %}  
+        <h1>Recently logged in users: {{ users_today }} </h1>
+        {% endif %}
+     {{ block.super }}
+    </div>
+</div>
+{% endblock %}

@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'savestsapp.apps.MyAdminConfig',
+    'savestsapp'
 ]
 
 MIDDLEWARE = [
@@ -51,10 +53,19 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'savests.urls'
 
+AUTH_USER_MODEL = 'savestsapp.User'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = '25'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
