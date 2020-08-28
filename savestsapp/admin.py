@@ -5,53 +5,36 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import EmailForm
 from django.core.mail import send_mail
+from django.template.response import TemplateResponse
+from django.contrib.auth.decorators import login_required
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("username", "email", "is_active", "date_joined", "last_login", "update_action")
+    list_display = ("username", "email", "is_active", "date_joined", "last_login", "update_status")
     change_list_template = 'admin/savestsapp/user/user_change_button.html'
     # date_hierarchy = 'date_joined'
-
-    def update_action(self, obj):
-        return format_html('<a class="button" href="{}">Update</a>&nbsp;', reverse('admin:change', args=[obj.id]))
-
-    update_action.short_description = 'Change user state'
-    # update_action.allow_tags = True
-
-
-    # def index (self, request, extra_context=None):
-    #     response = super().index_view(
-    #         request,
-    #         extra_context=extra_context,
-    #     )
-
-    # def each_context(self, request):
-    #     context = super(MyAdminSite, self).each_context(request)
-    #     context['users_today'] = User.objects.filter(date_joined__startswith=timezone.now().date())
-    #     print (context)
-    #     return context
-
-    # def index(self, request):
-    #     context = super().each_context(request)
-    #     users_today = User.objects.filter(date_joined__startswith=timezone.now().date())
-    #     user_count = users_today.count()
-    #     context.update ({
-    #         'user_count' : user_count,
-    #         'users_today': users_today
-    #     })
-    #     return context
 
     def get_urls(self):
         urls = super(UserAdmin, self).get_urls()
         new_urls = [
             path('<int:id>/change/', self.admin_site.admin_view(self.change_status), name='change'),
-            path('send_email/', self.send_email, name='sendEmail'),
+            path('send_email/', self.admin_site.admin_view(self.send_email), name='sendEmail'),
         ]
         return new_urls + urls
+
+
+    def update_status(self, obj):
+        url = (
+            reverse('admin:change', args=[obj.id])
+        )
+        return format_html('<a class="button" href="{}">Update</a>', url)
+
+    update_status.short_description = 'Change user state'
+    update_status.allow_tags = True
 
     def change_status(self, request, id):
         context = {}
@@ -67,8 +50,8 @@ class UserAdmin(admin.ModelAdmin):
         except ObjectDoesNotExist:
             messages = "User does not exist"
         context = {'messages': messages}
-        return render(request, 'admin/savestsapp/user/user_change_button.html', context)
-        
+        return redirect('/admin/savestsapp/user/')
+        # return render(request, 'admin/savestsapp/user/user_change_button.html', context)  
         
     #send email by staff
     def send_email(self, request):

@@ -5,4 +5,4 @@ class SavestsappConfig(AppConfig):
     name = 'savestsapp'
 
 class MyAdminConfig(AdminConfig):
-    default_site = 'savestsapp.admin.MyAdminSite'
+    default_site = 'savests.admin.MyAdminSite'
